@@ -13,44 +13,50 @@ import TextCpfMaskCustom from '../../commons/components/TextCpfMaskCustom'
 class IdentificationEditDialog extends Component {
 
     state = {
-        indentification: { type: 'cpf', value: '' }
+        identification: { type: 'cpf', value: '' }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { identification } = nextProps
+        const identificationToEdit = Object.assign(this.state.identification, identification);
+        this.setState({identification:identificationToEdit})
+
+
     }
 
     handleTypeRadioChange = event => {
-        const { indentification } = this.state;
-        indentification.type = event.target.value;
-        this.setState({ indentification });
+        const { identification } = this.state;
+        identification.type = event.target.value;
+        this.setState({ identification });
     };
 
     handleValueChange = event => {
-        const { indentification } = this.state;
-        indentification.value = event.target.value;
-        this.setState({ indentification });
+        const { identification } = this.state;
+        identification.value = event.target.value;
+        this.setState({ identification });
     };
 
 
     render() {
-        const { handleSubmit, open, handleCloseModal } = this.props;
-        const { indentification } = this.state;
+        const { onSubmit, open, handleCloseModal } = this.props;
+        const { identification } = this.state;
         return (
             <Dialog title="Salvar Identificação" modal={false} open={open}>
                 <Row>
                     <TextField
-                    label="Valor"
-                        value={indentification.value}
+                        label="Valor"
+                        value={identification.value}
                         onChange={this.handleValueChange}
                         fullWidth
-                        InputProps={{
-                            inputComponent:  indentification.type === 'cpf' ? TextCpfMaskCustom : TextCnpjMaskCustom,
-                        }}
+                       
                     />
-                    </Row>
-                    <Row>
+                </Row>
+                <Row>
                     <FormControl component="fieldset">
                         <RadioGroup
                             aria-label="type"
                             name="type"
-                            value={indentification.type}
+                            value={identification.type}
                             onChange={this.handleTypeRadioChange}
                         >
                             <FormControlLabel
@@ -75,7 +81,7 @@ class IdentificationEditDialog extends Component {
                             primary
                             color="second"
                             fullWidth
-                            onClick={handleSubmit}
+                            onClick={() => onSubmit(identification)}
                         />
                     </Col>
                     <Col xs={true} >

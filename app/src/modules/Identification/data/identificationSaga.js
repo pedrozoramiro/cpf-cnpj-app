@@ -27,7 +27,7 @@ function* updateIdentification(identification) {
     yield* apiSaga(
         identificationServices.updateIdentification,
         identification,
-        identificationActions.storageNewIdenfication
+        identificationActions.storageUpdateIdenfication
     );
 }
 

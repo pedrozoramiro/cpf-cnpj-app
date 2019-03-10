@@ -24,12 +24,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import IdentificationEditDialog from './IdentificationEditDialog'
-
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 
 class IdentificationList extends Component {
 
   state = {
+    identificationSelected: null,
     order: "value",
     filter: "",
     openIdentificationEditDialog: false
@@ -43,10 +45,13 @@ class IdentificationList extends Component {
     this.setState({ openIdentificationEditDialog });
   }
 
-  handleEditDialogSubmit = (Identification) => {
+  handleEditDialogSubmit = (identification) => {
+    const { updateIdentification } = this.props;
+    debugger;
+    updateIdentification(identification)
     this.setState({ openIdentificationEditDialog: false });
-  } 
-  
+  }
+
   handleEditDialogClose = (Identification) => {
     this.setState({ openIdentificationEditDialog: false });
   }
@@ -71,8 +76,12 @@ class IdentificationList extends Component {
     this.setState({ filter });
   };
 
+  handleEditIndentification = (identificationSelected) => {
+    this.setState({ identificationSelected, openIdentificationEditDialog: true });
+  };
+
   render() {
-    const { openIdentificationEditDialog, filter, order } = this.state;
+    const { openIdentificationEditDialog, filter, order, identificationSelected } = this.state;
     const { identifications } = this.props;
     return (
       <div>
@@ -121,7 +130,7 @@ class IdentificationList extends Component {
                     <CardHeader
                       avatar={
                         <Avatar >
-                          {indentification.isCpf ?
+                          {indentification.type === 'cpf' ?
                             <PersonIcon /> :
                             <DomainIcon />
                           }
@@ -152,6 +161,12 @@ class IdentificationList extends Component {
                         />
                       </CardContent>
                     )}
+
+                    <CardActions>
+                      <Button fullWidth color="primary" onClick={() => this.handleEditIndentification(indentification)}>
+                        Editar
+                      </Button>
+                    </CardActions>
                   </Card>
                 </Col>
               </Row>
@@ -168,9 +183,10 @@ class IdentificationList extends Component {
           </Col>
         </Row>
         <IdentificationEditDialog
+          identification={identificationSelected}
           open={openIdentificationEditDialog}
           onSubmit={this.handleEditDialogSubmit}
-          handleCloseModal={ this.handleEditDialogClose}
+          handleCloseModal={this.handleEditDialogClose}
         />
       </div>
     )

@@ -1,4 +1,4 @@
-import {createAction, handleActions} from 'redux-actions';
+import { createAction, handleActions } from 'redux-actions';
 
 
 /* Actions Types */
@@ -13,10 +13,10 @@ const UPDATE_IDENTIFICATION_SUCCESS = 'cpf-cnpj-app/idenfication/UPDATE_IDENTIFI
 export const types = {
     GET_ALL_IDENTIFICATIONS_REQUEST: GET_ALL_IDENTIFICATIONS_REQUEST,
     GET_ALL_IDENTIFICATIONS_SUCCESS: GET_ALL_IDENTIFICATIONS_SUCCESS,
-    NEW_IDENTIFICATION_REQUEST:NEW_IDENTIFICATION_REQUEST,
+    NEW_IDENTIFICATION_REQUEST: NEW_IDENTIFICATION_REQUEST,
     UPDATE_IDENTIFICATION_REQUEST: UPDATE_IDENTIFICATION_REQUEST,
-    NEW_IDENTIFICATION_SUCCESS:NEW_IDENTIFICATION_SUCCESS,
-    UPDATE_IDENTIFICATION_SUCCESS:UPDATE_IDENTIFICATION_SUCCESS
+    NEW_IDENTIFICATION_SUCCESS: NEW_IDENTIFICATION_SUCCESS,
+    UPDATE_IDENTIFICATION_SUCCESS: UPDATE_IDENTIFICATION_SUCCESS
 };
 
 /* Actions */
@@ -46,18 +46,22 @@ export default handleActions({
     [GET_ALL_IDENTIFICATIONS_SUCCESS]: (state, action) => ([
         ...action.payload.identifications
     ]),
-    [NEW_IDENTIFICATION_SUCCESS]: (state, action) =>  {
+    [NEW_IDENTIFICATION_SUCCESS]: (state, action) => {
         return insertItem(state.identifications, action.payload);
     },
-    [UPDATE_IDENTIFICATION_SUCCESS]: (state, action) =>  {
-        return updateItemInArray(state.identifications, action.payload.id, () => action.payload);
+    [UPDATE_IDENTIFICATION_SUCCESS]: (state, action) => {
+        return updateItemInArray(state, action.payload.identification.id, () => {
+            debugger;
+            return action.payload.identification;
+        })
     },
 }, initialState);
 
 
 //https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
 export function updateItemInArray(array, itemId, updateItemCallback) {
-    return array.map(item => {
+    debugger;
+    let retorno = array.map(item => {
         if (item.id !== itemId) {
             // Since we only want to update one item, preserve all others as they are now
             return item;
@@ -65,18 +69,20 @@ export function updateItemInArray(array, itemId, updateItemCallback) {
         // Use the provided callback to create an updated item
         return updateItemCallback(item);
     });
+
+    return retorno;
 }
 
 function insertItem(array, item) {
     let newArray = array.slice()
     newArray.splice(array.indexOf(item), 0, item)
     return newArray
-  }
+}
 
 
 
 /* Selectors */
-const getIdentifications = state =>  state.identifications;
+const getIdentifications = state => state.identifications;
 
 export const selectors = {
     getIdentifications
