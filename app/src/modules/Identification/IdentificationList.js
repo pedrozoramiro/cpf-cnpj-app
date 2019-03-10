@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {compose} from 'redux';
-import {connect} from 'react-redux';
-import {actions as identificationActions, selectors as IdentificationSelectors} from './data/identificationReducer';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { actions as identificationActions, selectors as identificationSelectors } from './data/identificationReducer';
 
 import { Row, Col } from 'react-flexbox-grid';
 import Fab from '@material-ui/core/Fab';
@@ -11,6 +11,7 @@ import CardContent from '@material-ui/core/CardContent';
 import IconButton from '@material-ui/core/IconButton';
 import DomainIcon from '@material-ui/icons/Domain';
 import PersonIcon from '@material-ui/icons/Person';
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
@@ -24,38 +25,58 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import IdentificationEditDialog from './IdentificationEditDialog'
 
+import MenuItem from '@material-ui/core/MenuItem';
+
 class IdentificationList extends Component {
 
-   /* componentWillReceiveProps(nextProps) {
-        const { postEdit, initialize } = nextProps
-        if (postEdit && (!this.props.postEdit || this.props.postEdit.id !== postEdit.id)){
-            initialize(postEdit);
-            return;
-        }
-    }*/
+  state = {
+    order: "value",
+    filter: "",
+    openIdentificationEditDialog: false
+  }
 
-    componentDidMount() {
-        const {getAllIdenfications} = this.props;
-        getAllIdenfications();
-    }
+  componentDidMount() {
+    this.handleGetAllIdenfications();
+  }
 
+  handleOpenModal = (openIdentificationEditDialog) => {
+    this.setState({ openIdentificationEditDialog });
+  }
+
+  handleEditDialogSubmit = (Identification) => {
+    this.setState({ openIdentificationEditDialog: false });
+  } 
   
-    state = { openIdentificationEditDialog: false }
+  handleEditDialogClose = (Identification) => {
+    this.setState({ openIdentificationEditDialog: false });
+  }
+
+  handleGetAllIdenfications = (order, filter) => {
+    const { getAllIdenfications } = this.props;
+    getAllIdenfications({ order, filter });
+  }
+
+  handleSelectOrderChange = event => {
+    var { value } = event.target;
+    var { filter } = this.state;
+    this.handleGetAllIdenfications(value, filter)
+    this.setState({ order: value });
+  };
 
 
-    handleOpenModal = (openIdentificationEditDialog) => {
-      this.setState({ openIdentificationEditDialog });
-    }
-  
-    handleSubmit = (Identification) => {
-      this.setState({ openIdentificationEditDialog: false });
-    }
-  
-    render() {
-      const { openIdentificationEditDialog } = this.state;
-        return (
-           <div>
-                <Row>
+  handleCancelFilter = () => {
+    var { order } = this.state;
+    var filter = '';
+    this.handleGetAllIdenfications(order, filter)
+    this.setState({ filter });
+  };
+
+  render() {
+    const { openIdentificationEditDialog, filter, order } = this.state;
+    const { identifications } = this.props;
+    return (
+      <div>
+        <Row>
           <Col xs={12}>
             <Row center="xs">
               <Col xs={6}>
@@ -65,129 +86,108 @@ class IdentificationList extends Component {
                 <Card >
                   <CardContent>
                     <SearchBar
-                      onChange={() => console.log('onChange')}
-                      onRequestSearch={() => console.log('onRequestSearch')}
-                      style={{
-                        margin: '0 auto',
-                        maxWidth: 800
-                      }}
+                      value={filter}
+                      onCancelSearch={() => this.handleCancelFilter()}
+                      onChange={(newValue) => this.setState({ filter: newValue })}
+                      onRequestSearch={() => this.handleGetAllIdenfications(order, filter)}
                     />
-                    <FormControl  >
-                      <InputLabel htmlFor="order-native-simple">Ordenar</InputLabel>
+                    <FormControl >
+                      <InputLabel htmlFor="order-select">Ordenar</InputLabel>
                       <Select
-                        native
+                        value={this.state.order}
+                        onChange={this.handleSelectOrderChange}
                         inputProps={{
-                          name: 'ordenar',
-                          id: 'order-native-simple',
+                          name: 'order',
+                          id: 'order-select',
                         }}
                       >
-                        <option value="" />
-                        <option value={10}>Tipo</option>
-                        <option value={20}>Blacklist</option>
-                        <option value={30}>Valor</option>
+                        <MenuItem value={'value'}>Valor</MenuItem>
+                        <MenuItem value={'type'}>Tipo</MenuItem>
+                        <MenuItem value={'blacklist'}>Blacklist</MenuItem>
                       </Select>
                     </FormControl>
-
                   </CardContent>
                 </Card>
               </Col>
             </Row>
           </Col>
         </Row>
-        <Row>
-          <Col xs={12}>
-            <Row center="xs">
-              <Col xs={6}>
-                <Card >
-                  <CardHeader
-                    avatar={
-                      <Avatar >
-                        <DomainIcon />
-                      </Avatar>
-                    }
-                    action={
-                      <IconButton>
-                        <MoreVertIcon />
-                      </IconButton>
-                    }
-                    title={"55.886.001/0001-77"}
-                  />
-
-                  <CardContent>
-                    <Chip
-                      icon={<BlockIcon />}
-                      label="BLACKLIST"
-                      color="secondary"
+        {identifications.map((indentification) => (
+          <Row key={indentification.value} >
+            <Col xs={12}>
+              <Row center="xs">
+                <Col xs={6}>
+                  <Card >
+                    <CardHeader
+                      avatar={
+                        <Avatar >
+                          {indentification.isCpf ?
+                            <PersonIcon /> :
+                            <DomainIcon />
+                          }
+                        </Avatar>
+                      }
+                      action={
+                        <IconButton>
+                          <MoreVertIcon />
+                        </IconButton>
+                      }
+                      title={indentification.value}
                     />
-                  </CardContent>
-                </Card>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+                    {indentification.blacklist && (
+                      <CardContent>
+                        <Chip
+                          icon={<BlockIcon />}
+                          label="BLACKLIST"
+                          color="secondary"
+                        />
+                      </CardContent>
+                    )}
+                    {!indentification.blacklist && (
+                      <CardContent>
+                        <Chip
+                          icon={<VerifiedUserIcon />}
+                          label="Tudo Certo"
+                          color="primary"
+                        />
+                      </CardContent>
+                    )}
+                  </Card>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        ))}
         <Row>
           <Col xs={12}>
             <Row center="xs">
               <Col xs={6}>
-                <Card >
-                  <CardHeader
-                    avatar={
-                      <Avatar >
-                        <PersonIcon />
-                      </Avatar>
-                    }
-                    action={
-                      <IconButton>
-                        <MoreVertIcon />
-                      </IconButton>
-                    }
-                    title={"064.511.409-02"}
-                  />
-
-                  <CardContent>
-                    <Chip
-                      icon={<BlockIcon />}
-                      label="BLACKLIST"
-                      color="secondary"
-                    />
-                  </CardContent>
-                </Card>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
-            <Row center="xs">
-              <Col xs={6}>
-              fazer paginacao
+                fazer paginacao
               </Col>
             </Row>
           </Col>
         </Row>
         <IdentificationEditDialog
           open={openIdentificationEditDialog}
-          handleCloseModal={() => console.log('onRequestSearch')}
-          onSubmit={this.handleSubmit}
+          onSubmit={this.handleEditDialogSubmit}
+          handleCloseModal={ this.handleEditDialogClose}
         />
-           </div>
-        )
-    }
+      </div>
+    )
+  }
 
 }
 
-
-
 const mapStateToProps = (state) => ({
-    identifications: IdentificationSelectors.getIdentifications(state)
+  identifications: identificationSelectors.getIdentifications(state)
 });
 
 const mapDispatchToProps = {
-    ...identificationActions,
+  ...identificationActions,
 };
 
 export default compose(
-    connect(mapStateToProps, mapDispatchToProps),
+  connect(mapStateToProps, mapDispatchToProps),
 )(IdentificationList);
 
 
