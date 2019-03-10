@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
-import {actions as indentificationActions, selectors as indentificationSelectors} from './data/indentificationReducer';
+import {actions as identificationActions, selectors as IdentificationSelectors} from './data/identificationReducer';
 
 import { Row, Col } from 'react-flexbox-grid';
 import Fab from '@material-ui/core/Fab';
@@ -22,9 +22,9 @@ import SearchBar from 'material-ui-search-bar'
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import IndentificationEditDialog from './IndentificationEditDialog'
+import IdentificationEditDialog from './IdentificationEditDialog'
 
-class IndentificationList extends Component {
+class IdentificationList extends Component {
 
    /* componentWillReceiveProps(nextProps) {
         const { postEdit, initialize } = nextProps
@@ -35,24 +35,24 @@ class IndentificationList extends Component {
     }*/
 
     componentDidMount() {
-        const {getAllIndenfications} = this.props;
-        getAllIndenfications();
+        const {getAllIdenfications} = this.props;
+        getAllIdenfications();
     }
 
   
-    state = { openIndentificationEditDialog: false }
+    state = { openIdentificationEditDialog: false }
 
 
-    handleOpenModal = (openIndentificationEditDialog) => {
-      this.setState({ openIndentificationEditDialog });
+    handleOpenModal = (openIdentificationEditDialog) => {
+      this.setState({ openIdentificationEditDialog });
     }
   
-    handleSubmit = (indentification) => {
-      this.setState({ openIndentificationEditDialog: false });
+    handleSubmit = (Identification) => {
+      this.setState({ openIdentificationEditDialog: false });
     }
   
     render() {
-      const { openIndentificationEditDialog } = this.state;
+      const { openIdentificationEditDialog } = this.state;
         return (
            <div>
                 <Row>
@@ -165,8 +165,8 @@ class IndentificationList extends Component {
             </Row>
           </Col>
         </Row>
-        <IndentificationEditDialog
-          open={openIndentificationEditDialog}
+        <IdentificationEditDialog
+          open={openIdentificationEditDialog}
           handleCloseModal={() => console.log('onRequestSearch')}
           onSubmit={this.handleSubmit}
         />
@@ -179,16 +179,16 @@ class IndentificationList extends Component {
 
 
 const mapStateToProps = (state) => ({
-    indentifications: indentificationSelectors.getIndentifications(state)
+    identifications: IdentificationSelectors.getIdentifications(state)
 });
 
 const mapDispatchToProps = {
-    ...indentificationActions,
+    ...identificationActions,
 };
 
 export default compose(
     connect(mapStateToProps, mapDispatchToProps),
-)(IndentificationList);
+)(IdentificationList);
 
 
 

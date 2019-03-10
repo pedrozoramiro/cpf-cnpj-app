@@ -1,9 +1,9 @@
 import {all} from 'redux-saga/effects';
 
-import indentificationSaga from '../modules/indentification/data/indentificationSaga';
+import identificationSaga from '../modules/Identification/data/identificationSaga';
 
 export default function* watchMany() {
     yield all([
-        indentificationSaga(),
+        identificationSaga(),
     ]);
 };

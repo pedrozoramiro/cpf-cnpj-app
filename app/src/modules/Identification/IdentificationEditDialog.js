@@ -3,7 +3,7 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Row, Col } from 'react-flexbox-grid';
 
-class IndentificationEditDialog extends Component {
+class IdentificationEditDialog extends Component {
 
    /* componentWillReceiveProps(nextProps) {
         const { postEdit, initialize } = nextProps
@@ -16,7 +16,7 @@ class IndentificationEditDialog extends Component {
     render() {
         const { handleSubmit, open, handleCloseModal, invalid, submitting } = this.props;
         return (
-            <Dialog title="Editar Indentificação" modal={false} open={open}>
+            <Dialog title="Editar Identificação" modal={false} open={open}>
                 <form onSubmit={handleSubmit}>
                     banana
                     <div>
@@ -48,5 +48,5 @@ class IndentificationEditDialog extends Component {
 
 }
 
-export default IndentificationEditDialog
+export default IdentificationEditDialog
 

@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
 
-import indentification from '../modules/indentification/data/indentificationReducer';
+import identification from '../modules/Identification/data/identificationReducer';
 
 
 export default combineReducers({
-    indentification
+    identification
 });
