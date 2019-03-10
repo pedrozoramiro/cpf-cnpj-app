@@ -1,8 +1,8 @@
 import {takeEvery} from 'redux-saga/effects';
 
-import {types as indentificationTypes, actions as indentificationActions} from '../redux/indentification';
+import {types as indentificationTypes, actions as indentificationActions} from './indentificationReducer';
 
-import apiSaga from '../../../commons/saga/apiSaga';
+import apiSaga from '../../../commons/apiSaga';
 import indentificationServices from './indentificationServices';
 
 

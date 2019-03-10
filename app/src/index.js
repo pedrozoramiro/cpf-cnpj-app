@@ -5,7 +5,7 @@ import './index.css';
 import App from './modules/App';
 import * as serviceWorker from './serviceWorker';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import configureStore from './commons/store';
+import configureStore from './configuration/store'
 import './index.css';
 
 function renderApp(store) {

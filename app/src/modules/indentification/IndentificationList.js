@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
-import {actions as indentificationActions, selectors as indentificationSelectors} from './redux/indentification';
+import {actions as indentificationActions, selectors as indentificationSelectors} from './data/indentificationReducer';
 
 import { Row, Col } from 'react-flexbox-grid';
 import Fab from '@material-ui/core/Fab';
