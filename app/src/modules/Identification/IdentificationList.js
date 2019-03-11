@@ -12,18 +12,12 @@ import CardContent from '@material-ui/core/CardContent';
 
 import SearchBar from 'material-ui-search-bar'
 
-import ListSubheader from '@material-ui/core/ListSubheader';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import IdentificationEditDialog from './IdentificationEditDialog'
 import MenuItem from '@material-ui/core/MenuItem';
 import IdentificationRow from './IdentificationRow'
-import Divider from '@material-ui/core/Divider';
-
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import Chip from '@material-ui/core/Chip';
-import BlockIcon from '@material-ui/icons/Block';
 
 class IdentificationList extends Component {
 
@@ -130,7 +124,7 @@ class IdentificationList extends Component {
         <Col xs={12}>
           <Row center="xs">
             <Col xs={6}>
-              {identifications.filter(i => !i.blacklist).map((indentification) => (
+              {identifications.map((indentification) => (
                 <IdentificationRow
                   key={indentification.value}
                   identification={indentification}
@@ -139,9 +133,6 @@ class IdentificationList extends Component {
             </Col>
           </Row>
         </Col>
-
-
-
         <IdentificationEditDialog
           identification={identificationSelected}
           open={openIdentificationEditDialog}
