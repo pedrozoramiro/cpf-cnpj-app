@@ -8,25 +8,22 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import IconButton from '@material-ui/core/IconButton';
-import DomainIcon from '@material-ui/icons/Domain';
-import PersonIcon from '@material-ui/icons/Person';
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import CardHeader from '@material-ui/core/CardHeader';
-import Avatar from '@material-ui/core/Avatar';
 
-import Chip from '@material-ui/core/Chip';
-import BlockIcon from '@material-ui/icons/Block';
+
 import SearchBar from 'material-ui-search-bar'
 
+import ListSubheader from '@material-ui/core/ListSubheader';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import IdentificationEditDialog from './IdentificationEditDialog'
-import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
+import IdentificationRow from './IdentificationRow'
+import Divider from '@material-ui/core/Divider';
+
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+import Chip from '@material-ui/core/Chip';
+import BlockIcon from '@material-ui/icons/Block';
 
 class IdentificationList extends Component {
 
@@ -42,13 +39,13 @@ class IdentificationList extends Component {
   }
 
   handleOpenModal = (openIdentificationEditDialog) => {
-    this.setState({ openIdentificationEditDialog });
+    this.setState({ openIdentificationEditDialog, identificationSelected: null });
   }
 
   handleEditDialogSubmit = (identification) => {
-    const { updateIdentification } = this.props;
-    debugger;
-    updateIdentification(identification)
+    const { updateIdentification, newIdentification } = this.props;
+    const fnSaveIdentification = identification.id ? updateIdentification : newIdentification;
+    fnSaveIdentification(identification)
     this.setState({ openIdentificationEditDialog: false });
   }
 
@@ -87,101 +84,64 @@ class IdentificationList extends Component {
       <div>
         <Row>
           <Col xs={12}>
-            <Row center="xs">
+            <Row around="xs">
               <Col xs={6}>
-                <Fab color="primary" aria-label="Add" onClick={() => this.handleOpenModal(true)} >
-                  <AddIcon />
-                </Fab>
                 <Card >
                   <CardContent>
-                    <SearchBar
-                      value={filter}
-                      onCancelSearch={() => this.handleCancelFilter()}
-                      onChange={(newValue) => this.setState({ filter: newValue })}
-                      onRequestSearch={() => this.handleGetAllIdenfications(order, filter)}
-                    />
-                    <FormControl >
-                      <InputLabel htmlFor="order-select">Ordenar</InputLabel>
-                      <Select
-                        value={this.state.order}
-                        onChange={this.handleSelectOrderChange}
-                        inputProps={{
-                          name: 'order',
-                          id: 'order-select',
-                        }}
-                      >
-                        <MenuItem value={'value'}>Valor</MenuItem>
-                        <MenuItem value={'type'}>Tipo</MenuItem>
-                        <MenuItem value={'blacklist'}>Blacklist</MenuItem>
-                      </Select>
-                    </FormControl>
+                    <Row around="xs">
+                      <Col xs={10} >
+                        <SearchBar
+                          value={filter}
+                          onCancelSearch={() => this.handleCancelFilter()}
+                          onChange={(newValue) => this.setState({ filter: newValue })}
+                          onRequestSearch={() => this.handleGetAllIdenfications(order, filter)}
+                        />
+                      </Col>
+                      <Col xs={2} >
+                        <Fab color="primary" aria-label="Add" onClick={() => this.handleOpenModal(true)} >
+                          <AddIcon />
+                        </Fab>
+                      </Col>
+                    </Row>
+                    <Row around="xs">
+                      <FormControl fullWidth>
+                        <InputLabel htmlFor="order-select">Ordenar</InputLabel>
+                        <Select
+                          value={this.state.order}
+                          onChange={this.handleSelectOrderChange}
+                          inputProps={{
+                            name: 'order',
+                            id: 'order-select',
+                          }}
+                        >
+                          <MenuItem value={'value'}>Valor</MenuItem>
+                          <MenuItem value={'type'}>Tipo</MenuItem>
+                          <MenuItem value={'blacklist'}>Blacklist</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Row>
+
                   </CardContent>
                 </Card>
               </Col>
             </Row>
           </Col>
         </Row>
-        {identifications.map((indentification) => (
-          <Row key={indentification.value} >
-            <Col xs={12}>
-              <Row center="xs">
-                <Col xs={6}>
-                  <Card >
-                    <CardHeader
-                      avatar={
-                        <Avatar >
-                          {indentification.type === 'cpf' ?
-                            <PersonIcon /> :
-                            <DomainIcon />
-                          }
-                        </Avatar>
-                      }
-                      action={
-                        <IconButton>
-                          <MoreVertIcon />
-                        </IconButton>
-                      }
-                      title={indentification.value}
-                    />
-                    {indentification.blacklist && (
-                      <CardContent>
-                        <Chip
-                          icon={<BlockIcon />}
-                          label="BLACKLIST"
-                          color="secondary"
-                        />
-                      </CardContent>
-                    )}
-                    {!indentification.blacklist && (
-                      <CardContent>
-                        <Chip
-                          icon={<VerifiedUserIcon />}
-                          label="Tudo Certo"
-                          color="primary"
-                        />
-                      </CardContent>
-                    )}
-
-                    <CardActions>
-                      <Button fullWidth color="primary" onClick={() => this.handleEditIndentification(indentification)}>
-                        Editar
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Col>
-              </Row>
+        <Col xs={12}>
+          <Row center="xs">
+            <Col xs={6}>
+              {identifications.filter(i => !i.blacklist).map((indentification) => (
+                <IdentificationRow
+                  key={indentification.value}
+                  identification={indentification}
+                  handleEditIndentification={this.handleEditIndentification} />
+              ))}
             </Col>
           </Row>
-        ))}
-        <Row>
-          <Col xs={12}>
-            <Row center="xs">
-              <Col xs={6}>
-                fazer paginacao
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        </Col>
+
+
+
         <IdentificationEditDialog
           identification={identificationSelected}
           open={openIdentificationEditDialog}
@@ -191,7 +151,6 @@ class IdentificationList extends Component {
       </div>
     )
   }
-
 }
 
 const mapStateToProps = (state) => ({
@@ -209,3 +168,36 @@ export default compose(
 
 
 
+/*
+<Col xs={12}>
+          <Row center="xs">
+            <Col xs={3}>
+            <Chip
+              icon={<BlockIcon />}
+              label="BLACKLIST"
+              color="secondary"
+            />
+              {identifications.filter(i => i.blacklist).map((indentification) => (
+                <IdentificationRow
+                  key={indentification.value}
+                  identification={indentification}
+                  handleEditIndentification={this.handleEditIndentification} />
+              ))}
+            </Col>
+            <Col xs={3}>
+              <Chip
+                icon={<VerifiedUserIcon />}
+                label="Tudo Certo"
+                color="primary"
+              />
+              {identifications.filter(i => !i.blacklist).map((indentification) => (
+                <IdentificationRow
+                  key={indentification.value}
+                  identification={indentification}
+                  handleEditIndentification={this.handleEditIndentification} />
+              ))}
+            </Col>
+          </Row>
+        </Col>
+
+*/

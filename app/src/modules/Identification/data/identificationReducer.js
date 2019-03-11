@@ -47,12 +47,11 @@ export default handleActions({
         ...action.payload.identifications
     ]),
     [NEW_IDENTIFICATION_SUCCESS]: (state, action) => {
-        return insertItem(state.identifications, action.payload);
+        return insertItem(state, action.payload);
     },
     [UPDATE_IDENTIFICATION_SUCCESS]: (state, action) => {
-        return updateItemInArray(state, action.payload.identification.id, () => {
-            debugger;
-            return action.payload.identification;
+        return updateItemInArray(state, action.payload.id, () => {
+            return action.payload;
         })
     },
 }, initialState);
@@ -60,7 +59,6 @@ export default handleActions({
 
 //https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns
 export function updateItemInArray(array, itemId, updateItemCallback) {
-    debugger;
     let retorno = array.map(item => {
         if (item.id !== itemId) {
             // Since we only want to update one item, preserve all others as they are now

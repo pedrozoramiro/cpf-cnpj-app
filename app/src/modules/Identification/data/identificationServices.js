@@ -28,12 +28,11 @@ function getAll(payload) {
 
 function newIndentification(identification) {
     identification.id = uuidv1();
-    return { data: { identification } };
+    return { data: { ...identification } };
 }
 
 function updateIndentification(identification) {
-    debugger;
-    return { data: { identification: JSON.parse(JSON.stringify(identification)) } };
+    return { data: { ...JSON.parse(JSON.stringify(identification)) } };
 }
 
 

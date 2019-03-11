@@ -10,7 +10,6 @@ export default function* apiSaga(fn, parameter, success, failure, settings = {})
     try {
         const response = yield call(fn, parameter);
         const data = response ? response.data : {};
-        debugger;
         if (success) {
             yield (callSuccessFunction ? call(success, data) : put(success(data)));
         }

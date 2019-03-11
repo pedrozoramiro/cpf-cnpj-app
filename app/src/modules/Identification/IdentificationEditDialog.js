@@ -7,21 +7,20 @@ import TextField from "@material-ui/core/TextField";
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import TextCnpjMaskCustom from '../../commons/components/TextCnpjMaskCustom'
-import TextCpfMaskCustom from '../../commons/components/TextCpfMaskCustom'
+import Switch from '@material-ui/core/Switch';
 
 class IdentificationEditDialog extends Component {
-
     state = {
-        identification: { type: 'cpf', value: '' }
+        identification: { type: 'cpf', value: '', blacklist: false }
     }
-
     componentWillReceiveProps(nextProps) {
         const { identification } = nextProps
-        const identificationToEdit = Object.assign(this.state.identification, identification);
-        this.setState({identification:identificationToEdit})
-
-
+        if (identification){//edit
+            this.setState({ identification: Object.assign(this.state.identification, identification) })
+            return;
+        }
+        //new
+        this.setState({ identification: { type: 'cpf', value: '', blacklist: false }});
     }
 
     handleTypeRadioChange = event => {
@@ -33,6 +32,12 @@ class IdentificationEditDialog extends Component {
     handleValueChange = event => {
         const { identification } = this.state;
         identification.value = event.target.value;
+        this.setState({ identification });
+    };
+
+    handleBlackListChange = event => {
+        const { identification } = this.state;
+        identification.blacklist = event.target.checked;
         this.setState({ identification });
     };
 
@@ -48,7 +53,18 @@ class IdentificationEditDialog extends Component {
                         value={identification.value}
                         onChange={this.handleValueChange}
                         fullWidth
-                       
+                    />
+                </Row>
+                <Row>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={identification.blacklist}
+                                onChange={this.handleBlackListChange}
+                                value={true}
+                            />
+                        }
+                        label="Black List"
                     />
                 </Row>
                 <Row>
