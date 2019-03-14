@@ -31,8 +31,17 @@ function* updateIdentification(identification) {
     );
 }
 
+function* removeIdentification(identification) {
+    yield* apiSaga(
+        identificationServices.deleteIdentification,
+        identification,
+        identificationActions.storageDeleteIdenfication
+    );
+}
+
 export default function* identificationSaga() {
     yield takeEvery(identificationTypes.GET_ALL_IDENTIFICATIONS_REQUEST, getAllIdentifications);
     yield takeEvery(identificationTypes.NEW_IDENTIFICATION_REQUEST, newIdentification);
     yield takeEvery(identificationTypes.UPDATE_IDENTIFICATION_REQUEST, updateIdentification);
+    yield takeEvery(identificationTypes.DELETE_IDENTIFICATION_REQUEST, removeIdentification);
 }

@@ -6,6 +6,8 @@ const GET_ALL_IDENTIFICATIONS_REQUEST = 'cpf-cnpj-app/idenfication/GET_ALL_IDENT
 const GET_ALL_IDENTIFICATIONS_SUCCESS = 'cpf-cnpj-app/idenfication/GET_ALL_IDENTIFICATIONS_SUCCESS';
 const NEW_IDENTIFICATION_REQUEST = 'cpf-cnpj-app/idenfication/NEW_IDENTIFICATION_REQUEST';
 const UPDATE_IDENTIFICATION_REQUEST = 'cpf-cnpj-app/idenfication/UPDATE_IDENTIFICATION_REQUEST';
+const DELETE_IDENTIFICATION_REQUEST = 'cpf-cnpj-app/idenfication/DELETE_IDENTIFICATION_REQUEST';
+const DELETE_IDENTIFICATION_SUCCESS = 'cpf-cnpj-app/idenfication/DELETE_IDENTIFICATION_SUCCESS';
 const NEW_IDENTIFICATION_SUCCESS = 'cpf-cnpj-app/idenfication/NEW_IDENTIFICATION_SUCCESS';
 const UPDATE_IDENTIFICATION_SUCCESS = 'cpf-cnpj-app/idenfication/UPDATE_IDENTIFICATION_SUCCESS';
 
@@ -16,26 +18,33 @@ export const types = {
     NEW_IDENTIFICATION_REQUEST: NEW_IDENTIFICATION_REQUEST,
     UPDATE_IDENTIFICATION_REQUEST: UPDATE_IDENTIFICATION_REQUEST,
     NEW_IDENTIFICATION_SUCCESS: NEW_IDENTIFICATION_SUCCESS,
-    UPDATE_IDENTIFICATION_SUCCESS: UPDATE_IDENTIFICATION_SUCCESS
+    UPDATE_IDENTIFICATION_SUCCESS: UPDATE_IDENTIFICATION_SUCCESS,
+    DELETE_IDENTIFICATION_REQUEST: DELETE_IDENTIFICATION_REQUEST,
+    DELETE_IDENTIFICATION_SUCCESS:DELETE_IDENTIFICATION_SUCCESS
+
 };
 
 /* Actions */
 const newIdentification = createAction(NEW_IDENTIFICATION_REQUEST);
 const updateIdentification = createAction(UPDATE_IDENTIFICATION_REQUEST);
 const getAllIdenfications = createAction(GET_ALL_IDENTIFICATIONS_REQUEST);
+const deleteIdentification = createAction(DELETE_IDENTIFICATION_REQUEST);
 
 const storageIdenfications = createAction(GET_ALL_IDENTIFICATIONS_SUCCESS);
 const storageNewIdenfication = createAction(NEW_IDENTIFICATION_SUCCESS);
 const storageUpdateIdenfication = createAction(UPDATE_IDENTIFICATION_SUCCESS);
+const storageDeleteIdenfication = createAction(DELETE_IDENTIFICATION_SUCCESS);
 
 export const actions = {
     getAllIdenfications,
     newIdentification,
     updateIdentification,
+    deleteIdentification,
 
     storageIdenfications,
     storageNewIdenfication,
-    storageUpdateIdenfication
+    storageUpdateIdenfication,
+    storageDeleteIdenfication
 };
 
 /* State */
@@ -54,6 +63,9 @@ export default handleActions({
             return action.payload;
         })
     },
+    [DELETE_IDENTIFICATION_SUCCESS]: (state, action) => {
+        return removeItem(state, action.payload);
+    },
 }, initialState);
 
 
@@ -71,6 +83,10 @@ export function updateItemInArray(array, itemId, updateItemCallback) {
     return retorno;
 }
 
+function removeItem(array, itemId) {
+    return array.filter(item=>item.id !== itemId.id)
+  }
+  
 function insertItem(array, item) {
     let newArray = array.slice()
     newArray.splice(array.indexOf(item), 0, item)

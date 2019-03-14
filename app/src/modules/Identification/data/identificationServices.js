@@ -35,12 +35,16 @@ function updateIndentification(identification) {
     return { data: { ...JSON.parse(JSON.stringify(identification)) } };
 }
 
+function deleteIndentification(id) {
+    return { data: { id }};
+}
 
 //TODO: por mascara como reponsabilidade do backend e retirar iscpf para um enum com essa responsabilidade.
 export default {
     query: (data) => Promise.resolve(getAll(data.payload)),
     newIdentification: identification => Promise.resolve(newIndentification(identification.payload)),
     updateIdentification: identification => Promise.resolve(updateIndentification(identification.payload)),
+    deleteIdentification: identification => Promise.resolve(deleteIndentification(identification.payload.id)),
 };
 
 

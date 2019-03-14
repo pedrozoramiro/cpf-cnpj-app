@@ -1,37 +1,39 @@
-import React, { Component } from 'react';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
-import { Row, Col } from 'react-flexbox-grid';
-import Radio from '@material-ui/core/Radio';
-import TextField from "@material-ui/core/TextField";
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Switch from '@material-ui/core/Switch';
+import React, { Component, Fragment } from 'react';
 
-class IdentificationEditDialog extends Component {
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import DialogActions from '@material-ui/core/DialogActions';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Grid from '@material-ui/core/Grid';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Switch from '@material-ui/core/Switch';
+import TextField from "@material-ui/core/TextField";
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Dialog from 'material-ui/Dialog';
+import { Grow, TitleContent } from './styles';
+
+
+
+export default class IdentificationEditDialog extends Component {
     state = {
         identification: { type: 'cpf', value: '', blacklist: false }
     }
+
     componentWillReceiveProps(nextProps) {
         const { identification } = nextProps
-        if (identification){//edit
-            this.setState({ identification: Object.assign(this.state.identification, identification) })
+        if (identification) {
+            this.setState({ identification: Object.assign(this.state.identification, identification) });
             return;
         }
-        //new
         this.setState({ identification: { type: 'cpf', value: '', blacklist: false }});
     }
 
-    handleTypeRadioChange = event => {
-        const { identification } = this.state;
-        identification.type = event.target.value;
-        this.setState({ identification });
-    };
-
     handleValueChange = event => {
         const { identification } = this.state;
-        identification.value = event.target.value;
+        identification[event.target.name] = event.target.value;
         this.setState({ identification });
     };
 
@@ -41,79 +43,83 @@ class IdentificationEditDialog extends Component {
         this.setState({ identification });
     };
 
-
     render() {
         const { onSubmit, open, handleCloseModal } = this.props;
         const { identification } = this.state;
         return (
             <Dialog title="Salvar Identificação" modal={false} open={open}>
-                <Row>
-                    <TextField
-                        label="Valor"
-                        value={identification.value}
-                        onChange={this.handleValueChange}
-                        fullWidth
-                    />
-                </Row>
-                <Row>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={identification.blacklist}
-                                onChange={this.handleBlackListChange}
-                                value={true}
-                            />
-                        }
-                        label="Black List"
-                    />
-                </Row>
-                <Row>
-                    <FormControl component="fieldset">
-                        <RadioGroup
-                            aria-label="type"
-                            name="type"
-                            value={identification.type}
-                            onChange={this.handleTypeRadioChange}
-                        >
+                <Fragment>
+                    <AppBar position="fixed">
+                        <Toolbar>
+                            <TitleContent>
+                                <Typography variant="h6" color="inherit" noWrap>Salvar Identificação</Typography>
+                            </TitleContent>
+                            <Grow />
+                        </Toolbar>
+                    </AppBar>
+                    <Grid container spacing={24}>
+                        <Grid item md={12}>
+                            <TextField required
+                                id="cardName" label="Valor da Identificação"
+                                name="value"
+                                value={identification.value}
+                                onChange={this.handleValueChange}
+                                fullWidth />
+                        </Grid>
+                        <Grid item md={6}>
                             <FormControlLabel
-                                value="cpf"
-                                control={<Radio color="primary" />}
-                                label="CPF"
-                                labelPlacement="start"
+                                control={
+                                    <Switch
+                                        checked={identification.blacklist}
+                                        onChange={this.handleBlackListChange}
+                                        value={true}
+                                    />
+                                }
+                                labelPlacement="end"
+                                label={identification.blacklist ? 'Situação da identificação Blacklisted' : 'Situação da identificação Verified'}
                             />
-                            <FormControlLabel
-                                value="cnpj"
-                                control={<Radio color="primary" />}
-                                label="CNPJ"
-                                labelPlacement="start"
-                            />
-                        </RadioGroup>
-                    </FormControl>
-                </Row>
-                <Row>
-                    <Col xs={true} >
-                        <RaisedButton
-                            label="Salvar"
-                            primary
-                            color="second"
-                            fullWidth
-                            onClick={() => onSubmit(identification)}
-                        />
-                    </Col>
-                    <Col xs={true} >
-                        <RaisedButton
-                            color="primary"
-                            onClick={handleCloseModal}
-                            label="Fechar"
-                            fullWidth
-                        />
-                    </Col>
-                </Row>
+                        </Grid>
+                        <Grid item md={12}>
+                            <FormControl component="fieldset">
+                                <RadioGroup
+                                    aria-label="type"
+                                    name="type"
+                                    value={identification.type}
+                                    onChange={this.handleValueChange}
+                                >
+                                    <FormControlLabel
+                                        value="cpf"
+                                        control={<Radio color="primary" />}
+                                        label="Identificação do tipo CPF"
+                                        labelPlacement="end"
+                                    />
+                                    <FormControlLabel
+                                        value="cnpj"
+                                        control={<Radio color="primary" />}
+                                        label="Identificação do tipo CNPJ"
+                                        labelPlacement="end"
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                </Fragment>
+                <DialogActions>
+                    <Button
+                        onClick={() => onSubmit(identification)}
+                        color="primary"
+                    >
+                        Salvar
+                </Button>
+                    <Button
+                        onClick={handleCloseModal}
+                        color="default"
+                        autoFocus
+                    >
+                        Cancelar
+                </Button>
+                </DialogActions>
             </Dialog>
-        )
+        );
     }
-
 }
-
-export default IdentificationEditDialog
-

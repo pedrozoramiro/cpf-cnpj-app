@@ -1,49 +1,65 @@
-import React, { Component } from 'react';
-import { compose } from 'redux';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { actions as identificationActions, selectors as identificationSelectors } from './data/identificationReducer';
+import { compose } from 'redux';
 
-import { Row, Col } from 'react-flexbox-grid';
+import Paper from '@material-ui/core/Paper';
+import ConfirmMessage from './ConfirmMessage';
+import { actions as identificationActions, selectors as identificationSelectors } from './data/identificationReducer';
+import IdentificationBar from './IdentificationBar';
+import IdentificationEditDialog from './IdentificationEditDialog';
+import IdentificationRow from './IdentificationRow';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
+import { List, Main, AddButtonContent } from './styles';
 
-
-import SearchBar from 'material-ui-search-bar'
-
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import IdentificationEditDialog from './IdentificationEditDialog'
-import MenuItem from '@material-ui/core/MenuItem';
-import IdentificationRow from './IdentificationRow'
 
 class IdentificationList extends Component {
 
   state = {
     identificationSelected: null,
-    order: "value",
-    filter: "",
-    openIdentificationEditDialog: false
+    openIdentificationEditDialog: false,
+    openRemoveIdentificacao: false,
+    openUpdateBlacklistIdentificacao: false
   }
+
 
   componentDidMount() {
     this.handleGetAllIdenfications();
   }
 
-  handleOpenModal = (openIdentificationEditDialog) => {
-    this.setState({ openIdentificationEditDialog, identificationSelected: null });
+  handleOpenDialog = (openPropertyName, value, identificationSelected) => {
+    this.setState({ [openPropertyName]: value, identificationSelected });
+  }
+
+  handleRemoveIdentificacaoConfirm = (identification) => {
+    console.log(identification);
+    const { deleteIdentification } = this.props;
+    deleteIdentification(identification);
+    this.setState({ openRemoveIdentificacao: false });
+  }
+
+  handleUpdateBlacklistIdentificacaoConfirm = (identification) => {
+    console.log(identification);
+    const { updateIdentification } = this.props;
+    identification.blacklist = !identification.blacklist;
+    updateIdentification(identification)
+    this.setState({ openUpdateBlacklistIdentificacao: false });
+  }
+
+
+  handleChangeBlacklistSubmit = (identification) => {
+    console.log(identification);
+    const { updateIdentification } = this.props;
+    identification.blacklist = !identification.blacklist;
+    updateIdentification(identification)
+    this.setState({ openUpdateBlacklistIdentificacao: false });
   }
 
   handleEditDialogSubmit = (identification) => {
+    console.log(identification);
     const { updateIdentification, newIdentification } = this.props;
     const fnSaveIdentification = identification.id ? updateIdentification : newIdentification;
     fnSaveIdentification(identification)
-    this.setState({ openIdentificationEditDialog: false });
-  }
-
-  handleEditDialogClose = (Identification) => {
     this.setState({ openIdentificationEditDialog: false });
   }
 
@@ -52,94 +68,57 @@ class IdentificationList extends Component {
     getAllIdenfications({ order, filter });
   }
 
-  handleSelectOrderChange = event => {
-    var { value } = event.target;
-    var { filter } = this.state;
-    this.handleGetAllIdenfications(value, filter)
-    this.setState({ order: value });
-  };
-
-
-  handleCancelFilter = () => {
-    var { order } = this.state;
-    var filter = '';
+  handleFilterOrOrder = ({ filter, order }) => {
     this.handleGetAllIdenfications(order, filter)
-    this.setState({ filter });
-  };
-
-  handleEditIndentification = (identificationSelected) => {
-    this.setState({ identificationSelected, openIdentificationEditDialog: true });
   };
 
   render() {
-    const { openIdentificationEditDialog, filter, order, identificationSelected } = this.state;
+    const { openIdentificationEditDialog, identificationSelected } = this.state;
     const { identifications } = this.props;
     return (
-      <div>
-        <Row>
-          <Col xs={12}>
-            <Row around="xs">
-              <Col xs={6}>
-                <Card >
-                  <CardContent>
-                    <Row around="xs">
-                      <Col xs={10} >
-                        <SearchBar
-                          value={filter}
-                          onCancelSearch={() => this.handleCancelFilter()}
-                          onChange={(newValue) => this.setState({ filter: newValue })}
-                          onRequestSearch={() => this.handleGetAllIdenfications(order, filter)}
-                        />
-                      </Col>
-                      <Col xs={2} >
-                        <Fab color="primary" aria-label="Add" onClick={() => this.handleOpenModal(true)} >
-                          <AddIcon />
-                        </Fab>
-                      </Col>
-                    </Row>
-                    <Row around="xs">
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor="order-select">Ordenar</InputLabel>
-                        <Select
-                          value={this.state.order}
-                          onChange={this.handleSelectOrderChange}
-                          inputProps={{
-                            name: 'order',
-                            id: 'order-select',
-                          }}
-                        >
-                          <MenuItem value={'value'}>Valor</MenuItem>
-                          <MenuItem value={'type'}>Tipo</MenuItem>
-                          <MenuItem value={'blacklist'}>Blacklist</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Row>
-
-                  </CardContent>
-                </Card>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Col xs={12}>
-          <Row center="xs">
-            <Col xs={6}>
+      <Fragment>
+        <IdentificationBar hanldeFilterOrOrderChange={this.handleFilterOrOrder} />
+        <Main>
+          <Paper>
+            <List>
               {identifications.map((indentification) => (
                 <IdentificationRow
                   key={indentification.value}
                   identification={indentification}
-                  handleEditIndentification={this.handleEditIndentification} />
+                  handleEditIndentification={()=>this.handleOpenDialog('openIdentificationEditDialog', true, indentification)}
+                  handleRemoveIndentification={() => this.handleOpenDialog('openRemoveIdentificacao', true, indentification)}
+                  handleUpdateBlacklistIdentificacao={() => this.handleOpenDialog('openUpdateBlacklistIdentificacao', true, indentification)} />
               ))}
-            </Col>
-          </Row>
-        </Col>
+            </List>
+          </Paper>
+          <AddButtonContent onClick={()=>this.handleOpenDialog('openIdentificationEditDialog', true, null)}>
+            <Fab color="primary">
+              <AddIcon/>
+            </Fab>
+          </AddButtonContent>
+        </Main>
+
         <IdentificationEditDialog
           identification={identificationSelected}
           open={openIdentificationEditDialog}
           onSubmit={this.handleEditDialogSubmit}
-          handleCloseModal={this.handleEditDialogClose}
+          handleCloseModal={()=> this.handleOpenDialog('openIdentificationEditDialog', false, null)}
         />
-      </div>
+
+        <ConfirmMessage
+          open={this.state.openRemoveIdentificacao}
+          text={'Deseja remover identificação ?'}
+          onConfirm={() => this.handleRemoveIdentificacaoConfirm(identificationSelected)}
+          onCancel={() => this.setState({ openRemoveIdentificacao: false })}
+        />
+
+        <ConfirmMessage
+          open={this.state.openUpdateBlacklistIdentificacao}
+          text={'Deseja altenar situação?'}
+          onConfirm={() => this.handleUpdateBlacklistIdentificacaoConfirm(identificationSelected)}
+          onCancel={() => this.setState({ openUpdateBlacklistIdentificacao: false })}
+        />
+      </Fragment>
     )
   }
 }
@@ -155,40 +134,3 @@ const mapDispatchToProps = {
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
 )(IdentificationList);
-
-
-
-
-/*
-<Col xs={12}>
-          <Row center="xs">
-            <Col xs={3}>
-            <Chip
-              icon={<BlockIcon />}
-              label="BLACKLIST"
-              color="secondary"
-            />
-              {identifications.filter(i => i.blacklist).map((indentification) => (
-                <IdentificationRow
-                  key={indentification.value}
-                  identification={indentification}
-                  handleEditIndentification={this.handleEditIndentification} />
-              ))}
-            </Col>
-            <Col xs={3}>
-              <Chip
-                icon={<VerifiedUserIcon />}
-                label="Tudo Certo"
-                color="primary"
-              />
-              {identifications.filter(i => !i.blacklist).map((indentification) => (
-                <IdentificationRow
-                  key={indentification.value}
-                  identification={indentification}
-                  handleEditIndentification={this.handleEditIndentification} />
-              ))}
-            </Col>
-          </Row>
-        </Col>
-
-*/

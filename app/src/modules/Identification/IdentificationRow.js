@@ -1,66 +1,84 @@
-import React, { Component } from 'react';
-import { Row, Col } from 'react-flexbox-grid';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import DomainIcon from '@material-ui/icons/Domain';
+import React, { Component, Fragment } from 'react';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Chip from '@material-ui/core/Chip';
+import Typography from '@material-ui/core/Typography';
+import BlockIcon from '@material-ui/icons/Block';
+import BusinessIcon from '@material-ui/icons/Business';
 import PersonIcon from '@material-ui/icons/Person';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import CardHeader from '@material-ui/core/CardHeader';
-import Avatar from '@material-ui/core/Avatar';
+import {
+  DesktopStatusContent,
+  DocumentValue,
+  ListItem,
+  ListItemActions,
+  ListItemValues,
+  MobileStatusContent,
+  StatusValue
+} from './styles';
 
-import Chip from '@material-ui/core/Chip';
-import BlockIcon from '@material-ui/icons/Block';
-import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
-
-class IdentificationRow extends Component {
+export default class IdentificationRow extends Component {
 
   render() {
-    const { identification, handleEditIndentification } = this.props;
+    const { identification, handleEditIndentification,handleRemoveIndentification,handleUpdateBlacklistIdentificacao } = this.props;
     return (
-      <Card >
-        <CardHeader
-          avatar={
-            <Avatar >
-              {identification.type === 'cpf' ?
-                <PersonIcon /> :
-                <DomainIcon />
-              }
-            </Avatar>
-          }
-          title={identification.value}
-        />
-        {identification.blacklist && (
-          <CardContent>
-            <Chip
-              icon={<BlockIcon />}
-              label="BLACKLIST"
-              color="secondary"
-            />
-          </CardContent>
-        )}
-        {!identification.blacklist && (
-          <CardContent>
-            <Chip
-              icon={<VerifiedUserIcon />}
-              label="Tudo Certo"
-              color="primary"
-            />
-          </CardContent>
-        )}
-
-        <CardActions>
-          <Button fullWidth color="primary" onClick={() => handleEditIndentification(identification)}>
-            Editar
-                      </Button>
-        </CardActions>
-      </Card>
+      <ListItem key={identification.id}>
+        <ListItemValues>
+          <Avatar>
+            {identification.type === 'cpf'
+              ? <PersonIcon />
+              : <BusinessIcon />
+            }
+          </Avatar>
+          <DocumentValue>
+            <Typography variant="caption" gutterBottom>
+              Documento
+            </Typography>
+            <Typography>
+              {identification.value}
+            </Typography>
+          </DocumentValue>
+          <StatusValue>
+            <Typography variant="caption" gutterBottom>
+              Situação
+            </Typography>
+            {identification.blacklist
+              ? (
+                <Fragment>
+                  <MobileStatusContent>
+                    <BlockIcon color="secondary" />
+                  </MobileStatusContent>
+                  <DesktopStatusContent>
+                    <Chip
+                      icon={<BlockIcon />}
+                      label="Blacklisted"
+                      color="secondary"
+                    />
+                  </DesktopStatusContent>
+                </Fragment>
+              )
+              : (
+                <Fragment>
+                  <MobileStatusContent>
+                    <VerifiedUserIcon color="primary" />
+                  </MobileStatusContent>
+                  <DesktopStatusContent>
+                    <Chip
+                      icon={<VerifiedUserIcon />}
+                      label="Verified"
+                      color="primary"
+                    />
+                  </DesktopStatusContent>
+                </Fragment>
+              )}
+          </StatusValue>
+        </ListItemValues>
+        <ListItemActions>
+          <Button size="small" onClick={() => handleUpdateBlacklistIdentificacao(identification)} color="primary">Alterar situação</Button>
+          <Button size="small" onClick={() => handleEditIndentification(identification)} >Editar</Button>
+          <Button size="small" onClick={() => handleRemoveIndentification(identification)}   color="secondary">Remover</Button>
+        </ListItemActions>
+      </ListItem>
     )
   }
 }
-
-
-export default IdentificationRow;
-
-
-
