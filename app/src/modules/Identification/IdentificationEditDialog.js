@@ -16,6 +16,8 @@ import Dialog from 'material-ui/Dialog';
 import { Grow, TitleContent } from './styles';
 
 
+import { isValid as isValidCNPJ, format as formatCNPJ, strip as stripCNPJ } from "@fnando/cnpj"; 
+import { isValid as isValidCPF, format as formatCPF, strip as stripCPF } from "@fnando/cpf"; 
 
 export default class IdentificationEditDialog extends Component {
     state = {
@@ -28,8 +30,9 @@ export default class IdentificationEditDialog extends Component {
             this.setState({ identification: Object.assign(this.state.identification, identification) });
             return;
         }
-        this.setState({ identification: { type: 'cpf', value: '', blacklist: false }});
+        this.setState({ identification: { type: 'cpf', value: '', blacklist: false } });
     }
+
 
     handleValueChange = event => {
         const { identification } = this.state;
@@ -43,8 +46,31 @@ export default class IdentificationEditDialog extends Component {
         this.setState({ identification });
     };
 
+    validValue = identification => {
+        var isValid = identification.type === 'cpf' ? isValidCPF : isValidCNPJ;
+        console.log('validvalue')
+        console.log(identification.value)
+        return isValid(identification.value);
+    }
+
+    formatValue = identification => {
+        var format = identification.type === 'cpf' ? formatCPF : formatCNPJ;
+        console.log('formatValue')
+        console.log(identification.value)
+        console.log(format(identification.value))
+        return format(identification.value);
+    }
+
+    handleSubmit = identification => {
+        const { onSubmit } = this.props;
+        var strip = identification.type === 'cpf' ? stripCPF : stripCNPJ;
+        identification.value = strip(identification.value)
+        onSubmit(identification);
+    }
+
+
     render() {
-        const { onSubmit, open, handleCloseModal } = this.props;
+        const { open, handleCloseModal } = this.props;
         const { identification } = this.state;
         return (
             <Dialog title="Salvar Identificação" modal={false} open={open}>
@@ -60,9 +86,9 @@ export default class IdentificationEditDialog extends Component {
                     <Grid container spacing={24}>
                         <Grid item md={12}>
                             <TextField required
-                                id="cardName" label="Valor da Identificação"
+                                id="value" label="Valor da Identificação"
                                 name="value"
-                                value={identification.value}
+                                value={this.formatValue(identification)}
                                 onChange={this.handleValueChange}
                                 fullWidth />
                         </Grid>
@@ -106,8 +132,9 @@ export default class IdentificationEditDialog extends Component {
                 </Fragment>
                 <DialogActions>
                     <Button
-                        onClick={() => onSubmit(identification)}
+                        onClick={() => this.handleSubmit(identification)}
                         color="primary"
+                        disabled={!this.validValue(identification)}
                     >
                         Salvar
                 </Button>

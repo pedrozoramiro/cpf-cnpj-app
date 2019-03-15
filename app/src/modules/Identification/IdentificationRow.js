@@ -17,10 +17,19 @@ import {
   StatusValue
 } from './styles';
 
+import { format as formatCNPJ} from "@fnando/cnpj" 
+import { format as formatCPF } from "@fnando/cpf"; 
+
+
 export default class IdentificationRow extends Component {
 
+  formatValue = identification => {
+    var format = identification.type === 'cpf' ? formatCPF : formatCNPJ;
+    return format(identification.value, true);
+  }
+
   render() {
-    const { identification, handleEditIndentification,handleRemoveIndentification,handleUpdateBlacklistIdentificacao } = this.props;
+    const { identification, handleEditIndentification, handleRemoveIndentification, handleUpdateBlacklistIdentificacao } = this.props;
     return (
       <ListItem key={identification.id}>
         <ListItemValues>
@@ -35,7 +44,7 @@ export default class IdentificationRow extends Component {
               Documento
             </Typography>
             <Typography>
-              {identification.value}
+              {this.formatValue(identification)}
             </Typography>
           </DocumentValue>
           <StatusValue>
@@ -76,7 +85,7 @@ export default class IdentificationRow extends Component {
         <ListItemActions>
           <Button size="small" onClick={() => handleUpdateBlacklistIdentificacao(identification)} color="primary">Alterar situação</Button>
           <Button size="small" onClick={() => handleEditIndentification(identification)} >Editar</Button>
-          <Button size="small" onClick={() => handleRemoveIndentification(identification)}   color="secondary">Remover</Button>
+          <Button size="small" onClick={() => handleRemoveIndentification(identification)} color="secondary">Remover</Button>
         </ListItemActions>
       </ListItem>
     )

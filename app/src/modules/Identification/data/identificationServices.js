@@ -9,16 +9,16 @@ function getAll(payload) {
     var { filter, order } = payload;
     console.log("getall   " + JSON.stringify(payload))
     var identifications = [
-        { id: uuidv1(), value: "65.668.200/0001-62", type: 'cnpj' },
-        { id: uuidv1(), value: "44.654.028/0001-18", type: 'cnpj', blacklist: true },
-        { id: uuidv1(), value: "41.472.428/0001-14", type: 'cnpj' },
-        { id: uuidv1(), value: "46.538.453/0001-77", type: 'cnpj' },
-        { id: uuidv1(), value: "03.063.077/0001-07", type: 'cnpj', blacklist: true },
-        { id: uuidv1(), value: "613.427.827-04", type: 'cpf' },
-        { id: uuidv1(), value: "351.528.518-06", type: 'cpf' },
-        { id: uuidv1(), value: "043.326.424-14", type: 'cpf', blacklist: true },
-        { id: uuidv1(), value: "107.356.776-11", type: 'cpf' },
-        { id: uuidv1(), value: "568.484.347-60", type: 'cpf', blacklist: true }
+        { id: uuidv1(), value: "65668200000162", type: 'cnpj' },
+        { id: uuidv1(), value: "44654028000118", type: 'cnpj', blacklist: true },
+        { id: uuidv1(), value: "41472428000114", type: 'cnpj' },
+        { id: uuidv1(), value: "46538453000177", type: 'cnpj' },
+        { id: uuidv1(), value: "03063077000107", type: 'cnpj', blacklist: true },
+        { id: uuidv1(), value: "61342782704", type: 'cpf' },
+        { id: uuidv1(), value: "35152851806", type: 'cpf' },
+        { id: uuidv1(), value: "04332642414", type: 'cpf', blacklist: true },
+        { id: uuidv1(), value: "10735677611", type: 'cpf' },
+        { id: uuidv1(), value: "56848434760", type: 'cpf', blacklist: true }
     ];
     return {
         data: { identifications: !filter ? identifications : identifications.filter(data => data.value.includes(filter)) }
