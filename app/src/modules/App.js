@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import './App.css';
-import IdentificationList from './Identification/IdentificationList'
+import AppLoading from '../commons/components/AppLoading/AppLoading';
+import AppNotifications from '../commons/components/AppNotifications/AppNotifications';
+import IdentificationList from './Identification/IdentificationList';
 
 class App extends Component {
 
   render() {
     return (
-      <div className="App">
-       <IdentificationList/>
+      <div>
+        <AppNotifications />
+        <AppLoading />
+        <IdentificationList />
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import request from '../../../commons/request';
+import request from '../../../commons/util/request';
 //TODO: remover essa api foi usada apenas para simular o backend
 import uuidv1 from 'uuid/v1';
 

@@ -2,7 +2,7 @@ import {takeEvery} from 'redux-saga/effects';
 
 import {types as identificationTypes, actions as identificationActions} from './identificationReducer';
 
-import apiSaga from '../../../commons/apiSaga';
+import apiSaga from '../../../commons/util/apiSaga';
 import identificationServices from './identificationServices';
 
 
@@ -19,7 +19,7 @@ function* newIdentification(identification) {
     yield* apiSaga(
         identificationServices.newIdentification,
         identification,
-        identificationActions.storageNewIdenfication
+        identificationActions.storageNewIdenfication,
     );
 }
 

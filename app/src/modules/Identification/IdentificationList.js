@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import Paper from '@material-ui/core/Paper';
-import ConfirmMessage from './ConfirmMessage';
+import ConfirmMessage from '../../commons/components/ConfirmMessage/ConfirmMessage';
 import { actions as identificationActions, selectors as identificationSelectors } from './data/identificationReducer';
 import IdentificationBar from './IdentificationBar';
 import IdentificationEditDialog from './IdentificationEditDialog';
