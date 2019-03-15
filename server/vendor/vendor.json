@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "9YQYg2PkA7lkFuUyCQGUv0vX5zA=",
+			"path": "github.com/gorilla/mux",
+			"revision": "8559a4f775fc329165fe32bd4c2543de8ada8fce",
+			"revisionTime": "2019-02-17T15:38:49Z"
+		}
+	],
+	"rootPath": "github.com/cpf-cnpj-app/server"
+}
