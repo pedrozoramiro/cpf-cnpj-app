@@ -82,17 +82,3 @@ https://facebook.github.io/create-react-app/
 
 - Criação de testes.
 - Criar um arquivo README com as instruções de instalação juntamente com as etapas necessárias para configuração. Você pode escolher sua abordagem de arquitetura e solução técnica.
-
-
-
-## Você será avaliado por:
-
-- Utilização de melhores práticas de desenvolvimento (nomenclatura, funções, classes, etc).
-
-- Utilização dos recursos mais recentes das linguagens.
-
-- Boa organização lógica e documental (readme, comentários, diagramas, etc).
-
-- Cobertura de todos os requisitos obrigatórios.
-
-- Nota: Criar um arquivo README com as instruções de instalação juntamente com as etapas necessárias para configuração. Você pode escolher sua abordagem de arquitetura e solução técnica.
